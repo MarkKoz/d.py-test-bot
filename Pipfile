@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+"discord.py" = {file = "https://github.com/Rapptz/discord.py/archive/rewrite.zip"}
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+start = "python -m testbot"

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13d7c207104f7bbf68e875fa1ff8351cbd609fae5a1b6ab386bd44d884b019f7"
+            "sha256": "e5bf3c65af76039aa9d0d8c3ff99e6815b56c1cf5f5e599625cd277cd09a5b10"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,8 +16,9 @@
         ]
     },
     "default": {
-        "discord.py": {
-            "file": "https://github.com/Rapptz/discord.py/archive/rewrite.zip"
+        "discord-py": {
+            "git": "https://github.com/Rapptz/discord.py",
+            "ref": "1222bce271cf736b4db8c1eecb2823edd22f85dc"
         }
     },
     "develop": {}

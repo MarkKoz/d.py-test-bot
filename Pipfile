@@ -4,12 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-discord-py = {git = "https://github.com/Rapptz/discord.py",ref = "rewrite"}
+discord-py = {git = "https://github.com/Rapptz/discord.py", ref = "3f06f24"}
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 [scripts]
 start = "python -m testbot"

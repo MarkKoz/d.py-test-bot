@@ -1,8 +1,7 @@
 import logging
 from textwrap import dedent
 
-import discord
-from discord.ext.commands import Context, group
+from discord.ext.commands import Cog, Context, group
 
 from testbot.utils import extensions
 
@@ -10,7 +9,7 @@ log = logging.getLogger(__name__)
 UNLOAD_BLACKLIST = ('testbot.extensions.manager',)
 
 
-class Extensions:
+class Extensions(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -47,7 +46,7 @@ class Extensions:
             for extension in to_unload:
                 _, error = extensions.manage(extension, extensions.Action.UNLOAD, self.bot)
                 if error:
-                    unload_failures[extension] = e
+                    unload_failures[extension] = error
                 else:
                     unloaded.append(extension)
 
@@ -57,7 +56,7 @@ class Extensions:
             for extension in unloaded:
                 _, error = extensions.manage(extension, extensions.Action.LOAD, self.bot)
                 if error:
-                    load_failures[extension] = e
+                    load_failures[extension] = error
 
             msg = dedent(f'''
                 **All extensions reloaded**

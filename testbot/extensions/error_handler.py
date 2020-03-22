@@ -1,5 +1,4 @@
 import logging
-import traceback
 
 import discord
 from discord.ext import commands
@@ -62,9 +61,8 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.CommandInvokeError):
             await ctx.send('Something went wrong internally!')
             log.error(
-                f'{ctx.command.qualified_name} failed to execute. '
-                f'{error.original.__class__.__name__}: {error.original}\n'
-                f'{"".join(traceback.format_tb(error.original.__traceback__))}'
+                f'{ctx.command.qualified_name} failed to execute. ',
+                exc_info=error.original
             )
 
 def setup(bot):

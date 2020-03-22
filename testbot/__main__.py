@@ -7,7 +7,13 @@ from testbot.bot import TestBot
 from testbot.utils import extensions
 
 log = logging.getLogger('testbot')
-bot = TestBot()
+bot = TestBot(
+    guild=os.environ['GUILD'],
+    command_prefix='!',
+    description='Discord.py Test Bot',
+    pm_help=None,
+    help_attrs=dict(hidden=True)
+)
 
 for extension in extensions.get_extensions():
     extensions.manage(extension, extensions.Action.LOAD, bot)

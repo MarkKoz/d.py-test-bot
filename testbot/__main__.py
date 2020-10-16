@@ -3,6 +3,7 @@ import os
 
 import discord
 
+from testbot.config import load_config
 from testbot.bot import TestBot
 from testbot.utils import extensions
 
@@ -20,5 +21,7 @@ EXTENSION_EXLCUDES = frozenset(os.environ.get('EXTENSION_EXCLUDES', '').split(',
 for extension in extensions.EXTENSIONS:
     if extension not in EXTENSION_EXLCUDES:
         bot.load_extension(extension)
+
+load_config(bot)
 
 bot.run(os.environ['BOT_TOKEN'])

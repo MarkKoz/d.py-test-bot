@@ -1,0 +1,15 @@
+guild:
+  categories:
+    my: 11111
+  text_channels:
+    my: 2222
+  voice_channels:
+    my: 3333
+  webhooks:
+    my: 4444
+  roles:
+    my: 5555
+
+testbot.extensions.sample:
+  enabled: false
+  role_whitelist: [111, 222]

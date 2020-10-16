@@ -23,7 +23,7 @@ class TestBot(commands.Bot):
 
         super().__init__(*args, **kwargs)
 
-        self.http_session: t.Optional[aiohttp.ClientSession] = None
+        self.http_session: Optional[aiohttp.ClientSession] = None
         self.guild = guild
 
         self._connector = None

@@ -8,7 +8,7 @@ from testbot.utils import extensions
 
 log = logging.getLogger('testbot')
 bot = TestBot(
-    guild=os.environ['GUILD'],
+    guild=int(os.environ['GUILD']),
     command_prefix='!',
     description='Discord.py Test Bot',
     pm_help=None,

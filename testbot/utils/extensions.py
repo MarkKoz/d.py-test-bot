@@ -1,61 +1,34 @@
-import logging
-import os
-from enum import Enum
-from pkgutil import iter_modules
-from traceback import StackSummary, TracebackException
+import importlib
+import inspect
+import pkgutil
+from typing import Iterator, NoReturn
 
-from discord.ext.commands import Bot
-
-from testbot.bot import TestBot
-
-log = logging.getLogger(__name__)
-EXTENSION_EXLCUDES = frozenset(os.environ.get('EXTENSION_EXCLUDES', '').split(','))
+from testbot import extensions as exts
 
 
-class Action(Enum):
-    LOAD = (TestBot.load_extension,)
-    UNLOAD = (TestBot.unload_extension,)
-    RELOAD = (TestBot.unload_extension, TestBot.load_extension)
+def unqualify(name: str) -> str:
+    """Return an unqualified name given a qualified module/package `name`."""
+    return name.rsplit(".", maxsplit=1)[-1]
 
 
-def manage(ext: str, action: Action, bot: Bot):
-    verb = action.name.lower()
-    success = False
-    error = None
+def walk_extensions() -> Iterator[str]:
+    """Yield extension names from the bot.exts subpackage."""
 
-    if (
-        (action is Action.LOAD and ext not in bot.extensions)
-        or (action is Action.UNLOAD and ext in bot.extensions)
-        or action is Action.RELOAD
-    ):
-        try:
-            for func in action.value:
-                func(bot, ext)
-        except Exception as e:
-            error = TracebackException.from_exception(e)
-            # err_msg = ''.join(error.format_exception_only()).strip()
-            # summary = StackSummary.from_list([error.stack[0]])
-            log.error(
-                f'Extension \'{ext}\' failed to {verb}:\n'
-                + ''.join(error.format()).rstrip()
-            )
-            msg = f'Failed to load extension `{ext}`:\n```{e}```'
-        else:
-            log.debug(f'Extension \'{ext}\' succesfully {verb}ed.')
-            msg = f'Extension {verb}ed: `{ext}`.'
-    else:
-        log.warning(f'Extension \'{ext}\' is already {verb}ed.')
-        msg = f'Extension `{ext}` is already {verb}ed.'
+    def on_error(name: str) -> NoReturn:
+        raise ImportError(name=name)  # pragma: no cover
 
-    return msg, error
+    for module in pkgutil.walk_packages(exts.__path__, f"{exts.__name__}.", onerror=on_error):
+        if unqualify(module.name).startswith("_"):
+            # Ignore module/package names starting with an underscore.
+            continue
+
+        if module.ispkg:
+            imported = importlib.import_module(module.name)
+            if not inspect.isfunction(getattr(imported, "setup", None)):
+                # If it lacks a setup function, it's not an extension.
+                continue
+
+        yield module.name
 
 
-def get_extensions():
-    for ext in iter_modules(('testbot/extensions',), 'testbot.extensions.'):
-        if ext.name not in EXTENSION_EXLCUDES and ext.name[-1] != '_':
-            yield ext.name
-
-
-def qualify_extension(ext: str):
-        ext = ext.lower()
-        return ext if '.' in ext else 'testbot.extensions.' + ext
+EXTENSIONS = frozenset(walk_extensions())

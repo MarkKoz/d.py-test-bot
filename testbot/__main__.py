@@ -16,7 +16,9 @@ bot = TestBot(
     intents=discord.Intents.all()
 )
 
-for extension in extensions.get_extensions():
-    extensions.manage(extension, extensions.Action.LOAD, bot)
+EXTENSION_EXLCUDES = frozenset(os.environ.get('EXTENSION_EXCLUDES', '').split(','))
+for extension in extensions.EXTENSIONS:
+    if extension not in EXTENSION_EXLCUDES:
+        bot.load_extension(extension)
 
 bot.run(os.environ['BOT_TOKEN'])
